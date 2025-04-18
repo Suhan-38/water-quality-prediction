@@ -40,7 +40,7 @@ Thumbs.db
 
 # Project specific
 screenshots/
-*.pkl
 build.sh
 runtime.txt
 requirements-render.txt
+

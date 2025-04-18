@@ -9,10 +9,6 @@ app = Flask(__name__)
 # Load the trained model
 model_path = 'random_forest_model.pkl'
 
-# Check if model exists, if not train it
-if not os.path.exists(model_path):
-    import model  # This will train and save the model
-
 # Load the model
 with open(model_path, 'rb') as f:
     model = pickle.load(f)
@@ -61,3 +57,4 @@ if __name__ == '__main__':
     # Use port 8000 for Docker, fallback to 5000 for local development
     port = int(os.environ.get('PORT', 8000))
     app.run(host='0.0.0.0', port=port)
+
