@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Quality Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tint"></i> Water Quality Prediction</h1>
+            <p>Enter water parameters to predict potability using Random Forest algorithm</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2>Water Parameters</h2>
+                <form id="prediction-form">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="ph">pH Level</label>
+                            <input type="number" id="ph" name="ph" step="0.01" min="0" max="14" required placeholder="e.g., 7.5">
+                            <span class="info-tooltip" title="pH is a measure of how acidic/basic water is. Range: 0-14">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="hardness">Hardness</label>
+                            <input type="number" id="hardness" name="hardness" step="0.01" min="0" required placeholder="e.g., 200">
+                            <span class="info-tooltip" title="Capacity of water to precipitate soap. Expressed in mg/L">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="solids">Solids (TDS)</label>
+                            <input type="number" id="solids" name="solids" step="0.01" min="0" required placeholder="e.g., 20000">
+                            <span class="info-tooltip" title="Total dissolved solids in ppm">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="chloramines">Chloramines</label>
+                            <input type="number" id="chloramines" name="chloramines" step="0.01" min="0" required placeholder="e.g., 7">
+                            <span class="info-tooltip" title="Amount of Chloramines in ppm">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="sulfate">Sulfate</label>
+                            <input type="number" id="sulfate" name="sulfate" step="0.01" min="0" required placeholder="e.g., 330">
+                            <span class="info-tooltip" title="Amount of Sulfates dissolved in mg/L">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="conductivity">Conductivity</label>
+                            <input type="number" id="conductivity" name="conductivity" step="0.01" min="0" required placeholder="e.g., 400">
+                            <span class="info-tooltip" title="Electrical conductivity of water in μS/cm">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="organic_carbon">Organic Carbon</label>
+                            <input type="number" id="organic_carbon" name="organic_carbon" step="0.01" min="0" required placeholder="e.g., 15">
+                            <span class="info-tooltip" title="Amount of organic carbon in ppm">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="trihalomethanes">Trihalomethanes</label>
+                            <input type="number" id="trihalomethanes" name="trihalomethanes" step="0.01" min="0" required placeholder="e.g., 65">
+                            <span class="info-tooltip" title="Amount of Trihalomethanes in μg/L">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="turbidity">Turbidity</label>
+                            <input type="number" id="turbidity" name="turbidity" step="0.01" min="0" required placeholder="e.g., 4">
+                            <span class="info-tooltip" title="Measure of light emitting property of water in NTU">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" id="predict-btn">
+                            <i class="fas fa-flask"></i> Predict Potability
+                        </button>
+                        <button type="button" id="sample-data-btn">
+                            <i class="fas fa-vial"></i> Use Sample Data
+                        </button>
+                        <button type="reset" id="reset-btn">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="result-section" id="result-section">
+                <div class="result-card">
+                    <h2>Prediction Result</h2>
+                    <div class="result-content">
+                        <div class="loader" id="loader">
+                            <div class="spinner"></div>
+                        </div>
+                        <div id="result-display" style="display: none;">
+                            <div class="result-indicator">
+                                <div id="result-icon"></div>
+                                <div id="result-text"></div>
+                            </div>
+                            <div class="probability-meter">
+                                <div class="probability-label">Probability:</div>
+                                <div class="meter-container">
+                                    <div id="probability-bar"></div>
+                                </div>
+                                <div id="probability-value"></div>
+                            </div>
+                            <div class="feature-importance">
+                                <h3>Feature Importance</h3>
+                                <div id="importance-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>About Water Quality Prediction</h2>
+            <p>This application uses a Random Forest machine learning algorithm to predict whether water is potable (safe to drink) based on various quality metrics. The model was trained on a dataset containing water quality parameters and their corresponding potability classification.</p>
+            
+            <div class="info-cards">
+                <div class="info-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>Machine Learning</h3>
+                    <p>Random Forest algorithm is used for its high accuracy and ability to handle complex relationships between features.</p>
+                </div>
+                
+                <div class="info-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Feature Importance</h3>
+                    <p>The model identifies which water parameters have the most significant impact on potability.</p>
+                </div>
+                
+                <div class="info-card">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <h3>Real-time Analysis</h3>
+                    <p>Get instant predictions based on your input parameters to assess water quality.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2023 Water Quality Prediction | Powered by Machine Learning</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

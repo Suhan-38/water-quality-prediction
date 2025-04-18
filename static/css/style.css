@@ -1,0 +1,443 @@
+/* Base Styles */
+:root {
+    --primary-color: #2196F3;
+    --primary-dark: #1976D2;
+    --primary-light: #BBDEFB;
+    --accent-color: #4CAF50;
+    --accent-dark: #388E3C;
+    --danger-color: #F44336;
+    --warning-color: #FFC107;
+    --text-color: #333;
+    --text-light: #757575;
+    --background-color: #f5f7fa;
+    --card-color: #fff;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+header i {
+    margin-right: 10px;
+}
+
+/* Main Content Layout */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 992px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Input Section Styles */
+.input-section {
+    background-color: var(--card-color);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: var(--box-shadow);
+}
+
+.input-section h2 {
+    margin-bottom: 20px;
+    color: var(--primary-dark);
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 10px;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .input-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-light);
+    outline: none;
+}
+
+.info-tooltip {
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.info-tooltip i {
+    font-size: 1rem;
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button i {
+    margin-right: 8px;
+}
+
+#predict-btn {
+    background-color: var(--primary-color);
+    color: white;
+    flex: 1;
+}
+
+#predict-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+#sample-data-btn {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+#sample-data-btn:hover {
+    background-color: var(--accent-dark);
+}
+
+#reset-btn {
+    background-color: #f1f1f1;
+    color: var(--text-color);
+}
+
+#reset-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Result Section Styles */
+.result-section {
+    background-color: var(--card-color);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+}
+
+.result-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.result-card h2 {
+    margin-bottom: 20px;
+    color: var(--primary-dark);
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 10px;
+}
+
+.result-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Loader */
+.loader {
+    display: none;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--primary-light);
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Result Display */
+.result-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 15px;
+}
+
+#result-icon {
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#result-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Probability Meter */
+.probability-meter {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.probability-label {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.meter-container {
+    height: 20px;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+#probability-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--danger-color), var(--warning-color), var(--accent-color));
+    transition: width 0.5s ease;
+}
+
+#probability-value {
+    text-align: right;
+    font-weight: 500;
+}
+
+/* Feature Importance */
+.feature-importance {
+    width: 100%;
+}
+
+.feature-importance h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+#importance-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.importance-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.importance-label {
+    display: flex;
+    justify-content: space-between;
+}
+
+.importance-label-name {
+    font-weight: 500;
+}
+
+.importance-meter {
+    height: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.importance-value {
+    height: 100%;
+    background-color: var(--primary-color);
+}
+
+/* Info Section */
+.info-section {
+    background-color: var(--card-color);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 40px;
+}
+
+.info-section h2 {
+    margin-bottom: 15px;
+    color: var(--primary-dark);
+    font-size: 1.5rem;
+}
+
+.info-section p {
+    margin-bottom: 25px;
+    color: var(--text-light);
+}
+
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .info-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+.info-card {
+    background-color: #f9f9f9;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow);
+}
+
+.info-card i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.info-card h3 {
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.info-card p {
+    color: var(--text-light);
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* Tooltip Styles */
+[title] {
+    position: relative;
+}
+
+[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    button {
+        width: 100%;
+    }
+}
