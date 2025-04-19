@@ -5,13 +5,10 @@ import sys
 # Print Python version for debugging
 print(f"Python version: {sys.version}")
 
-# Try different import strategies
-try:
-    import joblib
-    print("Successfully imported joblib")
-except ImportError:
-    print("Failed to import joblib, trying pickle")
-    import pickle
+# Import required modules
+import joblib
+import pickle  # Make sure pickle is imported
+print("Successfully imported joblib and pickle")
 
 try:
     import numpy as np
@@ -36,7 +33,8 @@ print()
 
 # Try different model files
 model = None
-model_files = ['compatible_model.joblib', 'random_forest_model.joblib', 'random_forest_model.pkl']
+# Prioritize the original model file
+model_files = ['random_forest_model.pkl', 'random_forest_model.joblib', 'compatible_model.joblib']
 
 print("\nAttempting to load models:")
 for model_path in model_files:
