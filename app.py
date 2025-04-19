@@ -28,23 +28,43 @@ except ImportError as e:
 app = Flask(__name__)
 
 # Load the trained model
+# List all files in the current directory for debugging
+print("\nListing all files in the current directory:")
+for file in os.listdir('.'):
+    print(f"- {file} ({os.path.getsize(file)} bytes)")
+print()
+
 # Try different model files
 model = None
 model_files = ['compatible_model.joblib', 'random_forest_model.joblib', 'random_forest_model.pkl']
 
+print("\nAttempting to load models:")
 for model_path in model_files:
+    print(f"Checking for {model_path}...")
     if os.path.exists(model_path):
+        print(f"  File exists: {model_path} ({os.path.getsize(model_path)} bytes)")
         try:
-            print(f"Attempting to load model from {model_path}")
+            print(f"  Attempting to load model from {model_path}")
             if model_path.endswith('.joblib'):
                 model = joblib.load(model_path)
             elif model_path.endswith('.pkl'):
                 with open(model_path, 'rb') as f:
                     model = pickle.load(f)
-            print(f"Successfully loaded model from {model_path}")
+            print(f"  Successfully loaded model from {model_path}")
+            print(f"  Model type: {type(model)}")
+            if hasattr(model, 'n_estimators'):
+                print(f"  Model n_estimators: {model.n_estimators}")
+            if hasattr(model, 'feature_importances_'):
+                print(f"  Model has feature_importances_: {len(model.feature_importances_)}")
             break
         except Exception as e:
-            print(f"Error loading {model_path}: {str(e)}")
+            print(f"  Error loading {model_path}: {str(e)}")
+            print(f"  Error type: {type(e).__name__}")
+            # Print traceback for more detailed error information
+            import traceback
+            print(f"  Traceback: {traceback.format_exc()}")
+    else:
+        print(f"  File does not exist: {model_path}")
 
 if model is None:
     print("Failed to load any model. Creating and training a fallback model.")
