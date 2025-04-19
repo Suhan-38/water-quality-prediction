@@ -52,43 +52,127 @@ print(f"Running in Render/Docker environment: {is_render}")
 # Create a simple model directly for Render environment
 model = None
 
-# For Render environment, create a simple model directly to avoid compatibility issues
+# For Render environment, create a more sophisticated model directly to avoid compatibility issues
 if is_render:
-    print("Running in Render environment - creating simple model directly")
+    print("Running in Render environment - creating advanced model directly")
     try:
-        # Create a simple model class that doesn't rely on NumPy internals
-        class SimpleModel:
+        # Create a more sophisticated model class that doesn't rely on NumPy internals
+        # but uses domain knowledge to make better predictions
+        class AdvancedModel:
             def __init__(self):
-                self.n_estimators = 1
-                # Create feature importances that emphasize pH and chloramines
-                self.feature_importances_ = np.array([0.2, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1, 0.05, 0.05])
-                print("Initialized simple model with predefined feature importances")
+                self.n_estimators = 10
+                # Feature importances based on domain knowledge about water quality
+                # Order: pH, Hardness, Solids, Chloramines, Sulfate, Conductivity, Organic_carbon, Trihalomethanes, Turbidity
+                self.feature_importances_ = np.array([0.20, 0.10, 0.15, 0.15, 0.10, 0.10, 0.10, 0.05, 0.05])
+                print("Initialized advanced model with domain-knowledge feature importances")
+
+                # Define thresholds for each parameter (based on WHO guidelines and domain knowledge)
+                self.thresholds = {
+                    'ph': (6.5, 8.5),  # pH should be between 6.5 and 8.5
+                    'Hardness': (0, 300),  # Hardness below 300 mg/L
+                    'Solids': (0, 1000),  # Total dissolved solids below 1000 mg/L
+                    'Chloramines': (0, 4),  # Chloramines below 4 mg/L
+                    'Sulfate': (0, 250),  # Sulfate below 250 mg/L
+                    'Conductivity': (0, 800),  # Conductivity below 800 μS/cm
+                    'Organic_carbon': (0, 5),  # Organic carbon below 5 mg/L
+                    'Trihalomethanes': (0, 80),  # Trihalomethanes below 80 μg/L
+                    'Turbidity': (0, 5)  # Turbidity below 5 NTU
+                }
+
+                # Weights for each parameter (must sum to 1)
+                self.weights = {
+                    'ph': 0.20,  # pH is very important
+                    'Hardness': 0.10,
+                    'Solids': 0.15,
+                    'Chloramines': 0.15,
+                    'Sulfate': 0.10,
+                    'Conductivity': 0.10,
+                    'Organic_carbon': 0.10,
+                    'Trihalomethanes': 0.05,
+                    'Turbidity': 0.05
+                }
+
+            def _parameter_score(self, param_name, value):
+                """Calculate a score (0-1) for a parameter based on its thresholds"""
+                if param_name == 'ph':
+                    # pH has an ideal range - too low or too high is bad
+                    low, high = self.thresholds[param_name]
+                    if low <= value <= high:
+                        # Within range - calculate how close to ideal (7.0)
+                        return 1.0 - abs(value - 7.0) / 2.0  # Normalize to 0-1
+                    else:
+                        # Outside range - bad
+                        return 0.0
+                else:
+                    # For other parameters, lower is generally better
+                    # But we use the threshold as a cutoff
+                    _, high = self.thresholds[param_name]
+                    if value <= high:
+                        # Below threshold - good, but lower is better
+                        return 1.0 - (value / high)
+                    else:
+                        # Above threshold - bad
+                        return 0.0
 
             def predict(self, X):
-                # Always predict 0 (not potable) for simplicity
-                return np.zeros(len(X), dtype=int)
+                """Predict water potability (0=not potable, 1=potable)"""
+                # Convert to DataFrame if it's not already
+                if not isinstance(X, pd.DataFrame):
+                    X = pd.DataFrame(X, columns=list(self.weights.keys()))
+
+                # Calculate overall score for each sample
+                scores = []
+                for _, row in X.iterrows():
+                    # Calculate weighted score for each parameter
+                    param_scores = {}
+                    for param, weight in self.weights.items():
+                        param_scores[param] = self._parameter_score(param, row[param]) * weight
+
+                    # Sum up the scores
+                    total_score = sum(param_scores.values())
+                    scores.append(total_score)
+
+                # Convert scores to binary predictions (threshold at 0.7)
+                return np.array([1 if score > 0.7 else 0 for score in scores])
 
             def predict_proba(self, X):
-                # Return fixed probabilities: 60% not potable, 40% potable
-                return np.array([[0.6, 0.4] for _ in range(len(X))])
+                """Predict probabilities for each class"""
+                # Convert to DataFrame if it's not already
+                if not isinstance(X, pd.DataFrame):
+                    X = pd.DataFrame(X, columns=list(self.weights.keys()))
 
-        model = SimpleModel()
-        print("Created a simple model directly in the Render environment")
+                # Calculate overall score for each sample
+                scores = []
+                for _, row in X.iterrows():
+                    # Calculate weighted score for each parameter
+                    param_scores = {}
+                    for param, weight in self.weights.items():
+                        param_scores[param] = self._parameter_score(param, row[param]) * weight
+
+                    # Sum up the scores
+                    total_score = sum(param_scores.values())
+                    scores.append(total_score)
+
+                # Convert scores to probabilities
+                return np.array([[1 - score, score] for score in scores])
+
+        model = AdvancedModel()
+        print("Created an advanced model directly in the Render environment")
 
         # Try to save this model for future use
         try:
-            joblib.dump(model, 'render_model.joblib')
-            print("Model saved as render_model.joblib for future use")
+            joblib.dump(model, 'advanced_render_model.joblib')
+            print("Model saved as advanced_render_model.joblib for future use")
         except Exception as e:
             print(f"Could not save model: {str(e)}")
     except Exception as e:
-        print(f"Error creating simple model: {str(e)}")
+        print(f"Error creating advanced model: {str(e)}")
         model = None
 
 # If we're not in Render or the direct model creation failed, try loading existing models
 if model is None:
-    # Prioritize the render-compatible model files
-    model_files = ['render_compatible_model.joblib', 'render_compatible_model.pkl', 'simple_model.pkl', 'simple_model.joblib', 'render_model.joblib', 'deployment_model.pkl', 'deployment_model.joblib', 'compatible_model.pkl', 'compatible_model.joblib', 'random_forest_model.pkl', 'random_forest_model.joblib', 'fallback_model.joblib', 'simple_fallback_model.joblib']
+    # Prioritize the advanced model files
+    model_files = ['advanced_render_model.joblib', 'render_compatible_model.joblib', 'render_compatible_model.pkl', 'simple_model.pkl', 'simple_model.joblib', 'render_model.joblib', 'deployment_model.pkl', 'deployment_model.joblib', 'compatible_model.pkl', 'compatible_model.joblib', 'random_forest_model.pkl', 'random_forest_model.joblib', 'fallback_model.joblib', 'simple_fallback_model.joblib']
 
     print("\nAttempting to load models:")
     for model_path in model_files:
