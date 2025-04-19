@@ -13,6 +13,13 @@ print("Successfully imported joblib and pickle")
 try:
     import numpy as np
     print(f"Successfully imported NumPy {np.__version__}")
+    print("Note: For Render deployment, NumPy 1.24.4 is required for compatibility")
+    # Check if _core exists (available in NumPy >= 1.26.0)
+    try:
+        from numpy import _core
+        print("numpy._core is available (NumPy >= 1.26.0)")
+    except ImportError:
+        print("numpy._core is NOT available (NumPy < 1.26.0)")
 except ImportError as e:
     print(f"NumPy import error: {str(e)}")
 
@@ -21,6 +28,13 @@ try:
     print(f"Successfully imported pandas {pd.__version__}")
 except ImportError as e:
     print(f"pandas import error: {str(e)}")
+
+try:
+    import sklearn
+    print(f"Successfully imported scikit-learn {sklearn.__version__}")
+    print("Note: For Render deployment, scikit-learn 1.0.2 is required for compatibility")
+except ImportError as e:
+    print(f"scikit-learn import error: {str(e)}")
 
 app = Flask(__name__)
 
@@ -33,8 +47,8 @@ print()
 
 # Try different model files
 model = None
-# Prioritize the original model file
-model_files = ['random_forest_model.pkl', 'random_forest_model.joblib', 'compatible_model.joblib']
+# Prioritize the deployment-ready model files
+model_files = ['deployment_model.pkl', 'deployment_model.joblib', 'compatible_model.pkl', 'compatible_model.joblib', 'random_forest_model.pkl', 'random_forest_model.joblib', 'fallback_model.joblib']
 
 print("\nAttempting to load models:")
 for model_path in model_files:

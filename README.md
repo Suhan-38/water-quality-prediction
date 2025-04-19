@@ -18,6 +18,8 @@ A beautiful web application that predicts water potability using a Random Forest
 - [Installation](#installation)
   - [For Users with Python Already Installed](#for-users-with-python-already-installed)
   - [For Users without Python](#for-users-without-python)
+- [Deployment](#deployment)
+  - [Deploying to Render](#deploying-to-render)
 - [Usage](#usage)
 - [Dataset Information](#dataset-information)
 - [Model Information](#model-information)
@@ -122,6 +124,43 @@ If you don't have Python installed on your system, follow these steps:
    ```
    http://localhost:5000
    ```
+
+## Deployment
+
+### Deploying to Render
+
+This application can be easily deployed to Render. Follow these steps:
+
+1. **Create a Render account**
+   - Go to [Render](https://render.com/) and sign up for an account
+
+2. **Create a new Web Service**
+   - Click on "New" and select "Web Service"
+   - Connect your GitHub repository or use the public repository URL
+
+3. **Configure the Web Service**
+   - Name: Choose a name for your application (e.g., "water-quality-prediction")
+   - Environment: Select "Docker"
+   - Branch: Choose the branch to deploy (usually "main" or "master")
+   - Root Directory: Leave empty if your Dockerfile is in the root directory
+   - Plan: Select the free plan for testing
+
+4. **Advanced Settings**
+   - No additional environment variables are required
+
+5. **Click "Create Web Service"**
+   - Render will automatically detect the Dockerfile and build your application
+
+6. **Important Version Compatibility Notes**
+   - For Render deployment, the application uses NumPy 1.24.4 and scikit-learn 1.0.2 (specified in requirements-render.txt)
+   - For local development, you can use newer versions of these libraries
+   - The model serialization/deserialization may have compatibility issues between different NumPy versions
+   - If you encounter the error `ModuleNotFoundError: No module named 'numpy._core'`, it means your model was saved with a newer NumPy version than what's available in the deployment environment
+   - Solution: Run `python create_deployment_model.py` locally before deploying to create a compatible model
+
+7. **Access Your Deployed Application**
+   - Once the deployment is complete, Render will provide a URL to access your application
+   - The URL will look like `https://your-app-name.onrender.com`
 
 ## Usage
 

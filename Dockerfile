@@ -12,6 +12,7 @@ COPY requirements-render.txt ./requirements.txt
 
 # Upgrade pip and install dependencies
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir numpy==1.24.4 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
