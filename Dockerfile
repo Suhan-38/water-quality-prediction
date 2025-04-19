@@ -15,6 +15,9 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir numpy==1.24.4 && \
     pip install --no-cache-dir -r requirements.txt
 
+# Set environment variable to indicate we're in Render/Docker
+ENV RENDER=true
+
 # Copy the rest of the application
 COPY . .
 
