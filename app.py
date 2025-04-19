@@ -171,8 +171,8 @@ if is_render:
 
 # If we're not in Render or the direct model creation failed, try loading existing models
 if model is None:
-    # Prioritize the Docker-trained model files
-    model_files = ['render_trained_model.joblib', 'render_trained_model.pkl', 'advanced_render_model.joblib', 'render_compatible_model.joblib', 'render_compatible_model.pkl', 'simple_model.pkl', 'simple_model.joblib', 'render_model.joblib', 'deployment_model.pkl', 'deployment_model.joblib', 'compatible_model.pkl', 'compatible_model.joblib', 'random_forest_model.pkl', 'random_forest_model.joblib', 'fallback_model.joblib', 'simple_fallback_model.joblib']
+    # Prioritize the simplified compatible model files
+    model_files = ['simple_compatible_model.joblib', 'simple_compatible_model.pkl', 'render_trained_model.joblib', 'render_trained_model.pkl', 'advanced_render_model.joblib', 'render_compatible_model.joblib', 'render_compatible_model.pkl', 'simple_model.pkl', 'simple_model.joblib', 'render_model.joblib', 'deployment_model.pkl', 'deployment_model.joblib', 'compatible_model.pkl', 'compatible_model.joblib', 'random_forest_model.pkl', 'random_forest_model.joblib', 'fallback_model.joblib', 'simple_fallback_model.joblib']
 
     print("\nAttempting to load models:")
     for model_path in model_files:
