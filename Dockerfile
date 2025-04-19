@@ -7,12 +7,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first to leverage Docker cache
-COPY requirements.txt .
+# Copy requirements file for Render deployment
+COPY requirements-render.txt ./requirements.txt
 
-# Install Python dependencies
+# Upgrade pip and install dependencies
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir gunicorn==20.1.0 && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application

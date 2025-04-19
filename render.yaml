@@ -7,5 +7,5 @@ services:
     healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
-        value: 3.8.16
+        value: 3.8.18
     autoDeploy: true
