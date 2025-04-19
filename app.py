@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-import pickle
+import joblib
 import numpy as np
 import pandas as pd
 import os
@@ -7,11 +7,10 @@ import os
 app = Flask(__name__)
 
 # Load the trained model
-model_path = 'random_forest_model.pkl'
+model_path = 'random_forest_model.joblib'
 
 # Load the model
-with open(model_path, 'rb') as f:
-    model = pickle.load(f)
+model = joblib.load(model_path)
 
 @app.route('/')
 def home():
