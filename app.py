@@ -1,16 +1,56 @@
 from flask import Flask, render_template, request, jsonify
-import joblib
-import numpy as np
-import pandas as pd
 import os
+import sys
+
+# Print Python version for debugging
+print(f"Python version: {sys.version}")
+
+# Try different import strategies
+try:
+    import joblib
+    print("Successfully imported joblib")
+except ImportError:
+    print("Failed to import joblib, trying pickle")
+    import pickle
+
+try:
+    import numpy as np
+    print(f"Successfully imported NumPy {np.__version__}")
+except ImportError as e:
+    print(f"NumPy import error: {str(e)}")
+
+try:
+    import pandas as pd
+    print(f"Successfully imported pandas {pd.__version__}")
+except ImportError as e:
+    print(f"pandas import error: {str(e)}")
 
 app = Flask(__name__)
 
 # Load the trained model
-model_path = 'random_forest_model.joblib'
+# Try different model files
+model = None
+model_files = ['compatible_model.joblib', 'random_forest_model.joblib', 'random_forest_model.pkl']
 
-# Load the model
-model = joblib.load(model_path)
+for model_path in model_files:
+    if os.path.exists(model_path):
+        try:
+            print(f"Attempting to load model from {model_path}")
+            if model_path.endswith('.joblib'):
+                model = joblib.load(model_path)
+            elif model_path.endswith('.pkl'):
+                with open(model_path, 'rb') as f:
+                    model = pickle.load(f)
+            print(f"Successfully loaded model from {model_path}")
+            break
+        except Exception as e:
+            print(f"Error loading {model_path}: {str(e)}")
+
+if model is None:
+    print("Failed to load any model. Using a fallback model.")
+    # Create a simple fallback model
+    from sklearn.ensemble import RandomForestClassifier
+    model = RandomForestClassifier(n_estimators=10)
 
 @app.route('/')
 def home():
